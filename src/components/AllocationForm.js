@@ -2,10 +2,12 @@ import React, { useContext, useState } from 'react';
 import { AppContext } from '../context/AppContext';
 
 const AllocationForm = (props) => {
-    const { dispatch,remaining  } = useContext(AppContext);
+    const { dispatch,remaining,currency  } = useContext(AppContext);
     const [name, setName] = useState('');
     const [cost, setCost] = useState('');
     const [action, setAction] = useState('');
+    const [newCurrency, setCurrency] = useState(currency);
+    
     const submitEvent = () => {
             if(cost > remaining) {
                 alert("The value cannot exceed remaining funds  £"+remaining);
@@ -28,34 +30,59 @@ const AllocationForm = (props) => {
                 });
             }
     };
+
+    if(newCurrency !== currency) {
+        dispatch({
+            type: 'CHG_CURRENCY',
+            payload: newCurrency,
+        }); 
+    }
+
     return (
         <div>
             <div className='row'>
             <div className="input-group mb-3" style={{ marginLeft: '2rem' }}>
-                    <div className="input-group-prepend">
+               
+                <div className="input-group-prepend">
                 <label className="input-group-text" htmlFor="inputGroupSelect01">Department</label>
-                  </div>
-                  <select className="custom-select" id="inputGroupSelect01" onChange={(event) => setName(event.target.value)}>
-                        <option defaultValue>Choose...</option>
-                        <option value="Marketing" name="marketing"> Marketing</option>
-                        <option value="Sales" name="sales">Sales</option>
-                        <option value="Finance" name="finance">Finance</option>
-                        <option value="HR" name="hr">HR</option>
-                        <option value="IT" name="it">IT</option>
-                  </select>
-                    <div className="input-group-prepend" style={{ marginLeft: '2rem' }}>
+                </div>
+
+                <select className="custom-select" id="inputGroupSelect01" onChange={(event) => setName(event.target.value)}>
+                    <option defaultValue>Choose...</option>
+                    <option value="Marketing" name="marketing"> Marketing</option>
+                    <option value="Sales" name="sales">Sales</option>
+                    <option value="Finance" name="finance">Finance</option>
+                    <option value="HR" name="hr">HR</option>
+                    <option value="IT" name="it">IT</option>
+                </select>
+
+                <div className="input-group-prepend" style={{ marginLeft: '2rem' }}>
                 <label className="input-group-text" htmlFor="inputGroupSelect02">Allocation</label>
-                  </div>
-                  <select className="custom-select" id="inputGroupSelect02" onChange={(event) => setAction(event.target.value)}>
-                        <option defaultValue value="Add" name="Add">Add</option>
-                <option value="Reduce" name="Reduce">Reduce</option>
-                  </select>
+                </div>
+
+                <select className="custom-select" id="inputGroupSelect02" onChange={(event) => setAction(event.target.value)}>
+                    <option defaultValue value="Add" name="Add">Add</option>
+                    <option value="Reduce" name="Reduce">Reduce</option>
+                </select>
+
+                <div className="input-group-prepend" style={{ marginLeft: '2rem' }}>
+                <label className="input-group-text" htmlFor="inputGroupSelect03">Currency</label>
+                </div>
+
+                <select className="custom-select" id="inputGroupSelect03" onChange={(event) => setCurrency(event.target.value)}>
+                    <option defaultValue value="£" name="Pound">£ Pound</option>
+                    <option value="$" name="Dollar">$ Dollar</option>
+                    <option value="€" name="Euro">€ Euro</option>
+                    <option value="₹" name="Rupee">₹ Ruppee</option>
+                </select>
+
+                <label for="cost" style={{ marginLeft: '2rem' }}>{currency} </label>
+
                     <input
                         required='required'
                         type='number'
                         id='cost'
                         value={cost}
-                        style={{ marginLeft: '2rem' , size: 10}}
                         onChange={(event) => setCost(event.target.value)}>
                         </input>
                     <button className="btn btn-primary" onClick={submitEvent} style={{ marginLeft: '2rem' }}>
